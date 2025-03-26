@@ -105,16 +105,16 @@ def merica(words):
     list_words = words
     list_spelled = [] #list of words that can be spelled using the codes
     for x in range (len(list_words)): #list of words
-        success = 0
+        code_found = 0
         if len(list_words[x]) % 2 == 0 and len(list_words[x]) > 0: #even length, not nothing
             for y in range (len(list_words[x])-1): #length of word
                 for z in range(len(list_codes)): #list of codes
-                    if (list_words[x].lower()[0+y*2:2+y*2]) == list_codes[z].lower(): #check
-                        success += 2
+                    if (list_words[x].lower()[y*2:2+y*2]) == list_codes[z].lower(): #check
+                        code_found += 2
             #all pairs in the word have been checked    
-            if success == len(list_words[x]):
+            if code_found == len(list_words[x]): #if the word consists of the codes
                 list_spelled.append(list_words[x])
-        #else, does nothing with it
+
     return(list_spelled)
 
 # A custom set of valid words to check the word list for

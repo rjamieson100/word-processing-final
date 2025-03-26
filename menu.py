@@ -44,37 +44,47 @@ authors = ["Farhan Mohammad", "Jun Li & Keith Marley", "Everett Campbell & Jaspe
            "Luca & Qui Loi Tran", "Luca & Qui Loi Tran",
            "Jun Li & Keith Marley", "Jun Li & Keith Marley", "Aidan McFadden"]
 
+'''
+Sort a list from left to right of which words in list contain most of desired letter,
+if amount of desired letter is equal, the word that is shorter is sent right,
+if both above cases are equal, the word thats starts with desired letter is sent right.
+
+'''
 def mostletters(search):
-    wordlist = open("words.txt", 'r')
+    wordlist = open("wordlist.txt", 'r')
     wordlist = wordlist.read().splitlines()
     listlen = len(wordlist) - 1
     for i in (range(listlen)):
-        for i2 in(range(listlen)):
+        for i2 in(range(listlen)): #Starts two loops, both spaning the range, of the number of words in the txt file minus one.
             letcount1 = 0
             letcount2 = 0
             wrd1 = wordlist[i2]
             wrd1list = list(wrd1)
             wrd2 = wordlist[i2 + 1]
-            wrd2list = list(wrd2)
+            wrd2list = list(wrd2) #Creates lists of both current words.
             for i3 in range(len(wrd1list)):
                 if search == wrd1list[i3]:
                     letcount1 += 1
             for i3 in range(len(wrd2list)):
                 if search == wrd2list[i3]:
                     letcount2 += 1
+            #Accesses amount of desired letter in each word.
             if letcount1 > letcount2:
                 temp = wrd2
                 wordlist[i2 + 1] = wrd1
                 wordlist[i2] = temp
+            #Swaps Words if earlier word in list has less of desiered letter
             elif letcount1 == letcount2 and len(wrd1) < len(wrd2):
                 temp = wrd2
                 wordlist[i2 + 1] = wrd1
                 wordlist[i2] = temp
+            #Swaps if words have equal amounts of desired letters but earlier word is shorter
             elif letcount1 == letcount2 and len(wrd1) == len(wrd2):
                 if wrd1list[0] == search and wrd2list != search:
                     temp = wrd2
                     wordlist[i2 + 1] = wrd1
                     wordlist[i2] = temp
+            #Swaps if both above if / elif staements are equal but earlier word starts with desired letter
     return wordlist
 
 def merica(words):

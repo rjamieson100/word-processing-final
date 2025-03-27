@@ -40,42 +40,11 @@ functions = ["All Vowels", "Most Letters", "'Merica", "Backwards", "Odd/Even",
 
 authors = ["Farhan Mohammad", "Jun Li & Keith Marley", "Everett Campbell & Jasper Duff", 
            "Everett Campbell & Jasper Duff", "Everett Campbell & Jasper Duff", 
-           "Olivia Chezzi", "Luca & Qui Loi Tran", 
-           "Luca & Qui Loi Tran", "Luca & Qui Loi Tran",
+           "Olivia Chezzi", "Luca B & Qui Loi Tran", 
+           "Luca B & Qui Loi Tran", "Luca B & Qui Loi Tran",
            "Jun Li & Keith Marley", "Jun Li & Keith Marley", "Aidan McFadden"]
 
-def mostletters(search):
-    wordlist = open("words.txt", 'r')
-    wordlist = wordlist.read().splitlines()
-    listlen = len(wordlist) - 1
-    for i in (range(listlen)):
-        for i2 in(range(listlen)):
-            letcount1 = 0
-            letcount2 = 0
-            wrd1 = wordlist[i2]
-            wrd1list = list(wrd1)
-            wrd2 = wordlist[i2 + 1]
-            wrd2list = list(wrd2)
-            for i3 in range(len(wrd1list)):
-                if search == wrd1list[i3]:
-                    letcount1 += 1
-            for i3 in range(len(wrd2list)):
-                if search == wrd2list[i3]:
-                    letcount2 += 1
-            if letcount1 > letcount2:
-                temp = wrd2
-                wordlist[i2 + 1] = wrd1
-                wordlist[i2] = temp
-            elif letcount1 == letcount2 and len(wrd1) < len(wrd2):
-                temp = wrd2
-                wordlist[i2 + 1] = wrd1
-                wordlist[i2] = temp
-            elif letcount1 == letcount2 and len(wrd1) == len(wrd2):
-                if wrd1list[0] == search and wrd2list != search:
-                    temp = wrd2
-                    wordlist[i2 + 1] = wrd1
-                    wordlist[i2] = temp
-    return wordlist
+
 
 def merica(words):
     """
@@ -95,23 +64,33 @@ def merica(words):
     list_words = words
     list_spelled = [] #list of words that can be spelled using the codes
     for x in range (len(list_words)): #list of words
-        code_found = 0
+        success = 0
         if len(list_words[x]) % 2 == 0 and len(list_words[x]) > 0: #even length, not nothing
             for y in range (len(list_words[x])-1): #length of word
                 for z in range(len(list_codes)): #list of codes
-                    if (list_words[x].lower()[y*2:2+y*2]) == list_codes[z].lower(): #check
-                        code_found += 2
+                    if (list_words[x].lower()[0+y*2:2+y*2]) == list_codes[z].lower(): #check
+                        success += 2
             #all pairs in the word have been checked    
-            if code_found == len(list_words[x]): #if the word consists of the codes
+            if success == len(list_words[x]):
                 list_spelled.append(list_words[x])
-
+        #else, does nothing with it
     return(list_spelled)
 
 # A custom set of valid words to check the word list for
+def read_words_from_file(filename):
+    """Reads words from a file and returns them as a list."""
+    try:
+        with open(filename, 'r') as file:
+            words = file.read().splitlines()  # Read lines and remove newline characters
+        return words
+    except FileNotFoundError:
+        print(f"Error: {filename} not found.")
+        return []
+
 valid_words = {"stressed", "diaper", "repaid", "desserts", "drawer", "reward", "deliver", "reviled", "gateman", "nametag", "dog", "god", "tag", "gat", "live", "evil", "devil", "lived", "now", "won", "parts", "strap", "flow", "wolf", "rat", "tar", "snug", "guns", "lager", "regal", "pat", "tap", "mood", "doom", "diodes", "seodi", "rip", "pir", "pit", "tip", "taps", "spat", "stun", "nuts"}
 
 # Function to find reversible words that are not palindromes, ensuring only one of each pair is included
-def find_reversible_non_palindromes():
+def find_reversible_non_palindromes(words_list):
     """
     Finds words in the predefined list where the reversed version forms a valid word but is not a palindrome.
     Ensures only one word from each reversible pair is included.
@@ -119,34 +98,35 @@ def find_reversible_non_palindromes():
     Returns:
         list: A list of words that meet the criteria.
     """
-    seen = set()  # Makes a set to store words already counted
-    # Uses a set rather than list because a set is faster than lists in gathering info as sets have a Big O of O(1) while lists have a Big O of O(n).
-    result = []  # List to store valid words
-    # Uses a list here so it retains an order.
+    # Makes a set to store words already counted
+    seen = set() # Uses a set rather than list because a set is faster than lists in gathering info as sets have a Big O of O(1) while lists have a Big O of O(n).
+    # List to store valid words
+    result = [] # Uses a list here so it retains an order.
 
-    for word in words:
-        reversed_word = word[::-1]  # Reverses the word
+    non_palindromes = []
+    for word in words_list:
+            reversed_word = word[::-1]  # Reverse the word
+            if reversed_word in words_list and word != reversed_word:
+                non_palindromes.append(word)
+    return non_palindromes
 
-        # Ensure reversed word is valid, is not a palindrome, and has not already been counted
-        if reversed_word in valid_words and word != reversed_word and reversed_word not in seen:
-            result.append(word)  # Add to the result list
-            seen.add(word)  # Mark this word as counted
-            seen.add(reversed_word)  # Also mark the reversed word as counted to avoid duplicates
 
-    return result if result else ["No reversible words found"]  # Ensures non-empty output
+word_list = "words.txt"
+words_list = read_words_from_file(word_list)
+
 
 # List of words to search through
-words = ["stressed", "diaper", "deliver", "hello", "world", "drawer", "gateman", "racecar"]
+
 
 # Call the function and store the results
-reversible_words = find_reversible_non_palindromes()
-# Output: Words that have a valid reversed counterpart
+reversible_words = find_reversible_non_palindromes(words_list)
+print(reversible_words)  # Output: Words that have a valid reversed counterpart
 
 def backwards(words_list):
-    backwards = find_reversible_non_palindromes()
+    backwards = find_reversible_non_palindromes(words_list)
     return(backwards)
 
-valid_word_set = {"dry", "nude", "star", "example", "hello", "bun", "lid", "red", "pen", "cat"}
+valid_word_set = {"dry", "nude", "star", "example", "hello", "bun", "lid", "red", "pen", "cat", "rat", "bat", "mat", "hat", "pat", "dot", "lot", "pot", "cot", "bat", "kit", "bit", "sit", "fit", "lit", "bat", "tab", "flap", "slap", "trap", "map", "clap", "band", "hand", "sand", "land", "grand", "stand", "plan", "flan", "man", "can", "pan", "fan", "ban", "ran", "tan", "fan", "plan", "trap", "grip", "slip", "tip", "zip", "dip", "sip", "clip", "lip", "rip", "flip", "snip", "drip", "slip", "snip", "skip", "trip", "flip", "slap", "lap", "map", "snap", "trap", "grip", "ship", "ship", "clip", "tip", "slim", "slam", "trim", "rim", "dim", "whip", "lip", "chip", "jip", "zip", "slim", "slap", "rap", "flap", "snap", "blap", "trap", "drip", "flip", "clip", "tip", "rip", "rip", "lids", "slips", "cats", "pens", "steps", "backs", "maps", "games", "mats", "bats", "hits", "pins", "runs", "cups", "dips", "sips", "laps", "scrap", "trap", "trim", "gram", "slam", "flip", "whip", "slap", "chip", "grip", "grip", "trap"}
 
 def find_valid_words(word_list):
     # Create an empty list to store the valid words
@@ -548,9 +528,8 @@ def function_menu():
         print("All Vowels")
 
     elif selection == 2:
-        most_letters = mostletters(words_list)
-        for x in most_letters:
-            print(x)
+        ##Instert call for Most Letters
+        print("Most Letters")
 
     elif selection == 3:
         words_merica = merica(words_list)
@@ -565,6 +544,7 @@ def function_menu():
             print(x)
 
     elif selection == 5:
+        ##Instert call for Odd/Even
         valid_words = odd_even(words_list)
         print("\n")
         for x in valid_words:
